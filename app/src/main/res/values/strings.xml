@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HDR屏幕激活器</string>
+    <string name="btn_open_viewer">打开HDR查看器</string>
+    <string name="btn_test_pattern_1">亮度渐变</string>
+    <string name="btn_test_pattern_2">色域测试</string>
+    <string name="btn_test_pattern_3">灰度阶梯</string>
+    <string name="btn_test_pattern_4">彩条测试</string>
+    <string name="label_hdr_status">HDR状态</string>
+    <string name="label_pattern">测试图案</string>
+    <string name="label_brightness">峰值亮度</string>
+    <string name="hdr_supported">设备支持HDR</string>
+    <string name="hdr_not_supported">设备不支持HDR</string>
+    <string name="hdr_active">HDR已激活</string>
+    <string name="hdr_inactive">HDR未激活</string>
+</resources>
