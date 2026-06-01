@@ -1,0 +1,19 @@
+<!-- 简单的HDR图标矢量图 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- HDR文字 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M20,35 L20,73 L28,73 L28,58 L36,58 L36,73 L44,73 L44,35 L36,35 L36,51 L28,51 L28,35 Z" />
+    <!-- D的竖线 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M50,35 L50,73 L64,73 Q75,73 75,62 Q75,54 70,50 Q75,46 75,38 Q75,35 64,35 Z M58,42 L62,42 Q66,42 66,46 Q66,50 62,50 L58,50 Z M58,58 L64,58 Q68,58 68,62 Q68,66 64,66 L58,66 Z" />
+    <!-- R的竖线 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M80,35 L80,73 L88,73 L88,58 L94,54 L100,73 L108,73 L100,52 Q108,48 108,42 Q108,35 96,35 Z M88,42 L94,42 Q100,42 100,46 Q100,50 94,50 L88,50 Z" />
+</vector>
