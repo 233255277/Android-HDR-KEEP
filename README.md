@@ -11,7 +11,7 @@ Android 14+ 支持 HDR 显示，但系统仅在检测到 HDR 内容（如播放 
 1. **MainActivity** —— 前台。 `SurfaceView` + `MediaPlayer` 循环播放内置 HDR10 视频
 2. **HdrOverlayService** —— 全屏透明悬浮窗（alpha=0.001），同样播放 HDR10 视频
 
-两个 HDR layer 叠加 → `numHdrLayers ≥ 1` → SurfaceFlinger 切换 `dynamic_range: HDR` → 屏幕进入高亮度/高色准状态。
+HDR layer 叠加 → `numHdrLayers ≥ 1` → SurfaceFlinger 切换 `dynamic_range: HDR` → 屏幕进入高亮度/高色准状态。
 
 ## 屏幕效果
 
@@ -100,6 +100,8 @@ Android 14 的 `SurfaceControl.Transaction.setDataSpace(BT2020_PQ)` 在部分设
 **Q: 悬浮窗会影响触控吗？**
 
 不会。设置了 `FLAG_NOT_TOUCHABLE | FLAG_NOT_FOCUSABLE`，所有触摸事件穿透到下层应用。
+**Q: 需要什么权限？**
+遵循最小权限原则开发，除悬浮窗权限外未申请任何权限
 
 ## 许可
 
