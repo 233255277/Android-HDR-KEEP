@@ -74,6 +74,28 @@ class MainActivity : Activity() {
             layoutParams = lp
         }
         btnBar.addView(overlayButton!!)
+        // 长期后台任务设置按钮（测试分支）
+        btnBar.addView(Button(this).apply {
+            text = "长期后台"
+            textSize = 12f; setBackgroundColor(0xFF9C27B0.toInt())
+            setTextColor(0xFFFFFFFF.toInt()); setPadding(16, 8, 16, 8)
+            setOnClickListener {
+                try {
+                    val intent = Intent().apply {
+                        setClassName("com.android.settings",
+                            "com.android.settings.Settings\$LongBackgroundTasksActivity")
+                    }
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(this@MainActivity, "无法打开: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+            val lp = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, 80); lp.setMargins(0, 0, 12, 0)
+            layoutParams = lp
+        })
+
+
         root.addView(btnBar)
         setContentView(root)
         setupImmersiveMode()  // 必须在setContentView之后
