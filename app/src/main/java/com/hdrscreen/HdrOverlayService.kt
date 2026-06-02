@@ -54,14 +54,18 @@ class HdrOverlayService : Service() {
             val channel = NotificationChannel(
                 "hdr_overlay",
                 "HDR悬浮窗",
-                NotificationManager.IMPORTANCE_LOW
-            ).apply { description = "保持屏幕HDR激发态" }
+                NotificationManager.IMPORTANCE_MIN
+            ).apply {
+                description = "保持屏幕HDR激发态"
+                setShowBadge(false)
+            }
             val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             nm.createNotificationChannel(channel)
             val notification = Notification.Builder(this, "hdr_overlay")
                 .setContentTitle("HDR屏幕激活器")
                 .setContentText("悬浮窗运行中")
                 .setSmallIcon(android.R.drawable.ic_menu_view)
+                .setOngoing(true)
                 .build()
             startForeground(1, notification)
         }
