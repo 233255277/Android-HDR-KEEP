@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.SurfaceView
-import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.WindowManager
@@ -54,7 +53,7 @@ class MainActivity : Activity() {
         }
         root.addView(label)
 
-        // 悬浮窗按钮
+        // 底部按钮栏
         val btnBar = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             setBackgroundColor(0xCC1E1E1E.toInt()); setPadding(16, 12, 16, 12)
@@ -65,8 +64,9 @@ class MainActivity : Activity() {
         }
 
         overlayButton = Button(this).apply {
-            text = "启动悬浮窗"
-            textSize = 14f; setBackgroundColor(0xFF4CAF50.toInt())
+            text = if (HdrOverlayService.isServiceRunning) "停止悬浮窗" else "启动悬浮窗"
+            textSize = 14f
+            setBackgroundColor(if (HdrOverlayService.isServiceRunning) 0xFFE53935.toInt() else 0xFF4CAF50.toInt())
             setTextColor(0xFFFFFFFF.toInt()); setPadding(24, 12, 24, 12)
             setOnClickListener { toggleOverlay() }
             val lp = LinearLayout.LayoutParams(
@@ -76,7 +76,7 @@ class MainActivity : Activity() {
         btnBar.addView(overlayButton!!)
         root.addView(btnBar)
         setContentView(root)
-        setupImmersiveMode()  // 必须在setContentView之后
+        setupImmersiveMode()
 
         // Surface准备好后启动视频
         surfaceView.holder.addCallback(object : android.view.SurfaceHolder.Callback {
@@ -103,25 +103,19 @@ class MainActivity : Activity() {
                 setSurface(surface)
                 setLooping(true)
                 setVolume(0f, 0f)
-                setOnPreparedListener { mp ->
-                    Log.i("HdrMain", "MediaPlayer prepared, starting HDR video")
-                    mp.start()
-                }
+                setOnPreparedListener { it.start() }
                 setOnErrorListener { _, what, extra ->
-                    Log.e("HdrMain", "MediaPlayer error: what=$what extra=$extra")
-                    false
+                    Log.e("HdrMain", "MediaPlayer error: what=$what extra=$extra"); false
                 }
                 setOnInfoListener { _, what, _ ->
                     if (what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                         Log.i("HdrMain", "HDR video rendering started")
-                    }
-                    false
+                    }; false
                 }
                 prepareAsync()
             }
         } catch (e: Exception) {
             Log.e("HdrMain", "Failed to start HDR video: ${e.message}", e)
-            Toast.makeText(this, "HDR视频启动失败: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
