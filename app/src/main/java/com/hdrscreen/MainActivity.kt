@@ -75,40 +75,25 @@ class MainActivity : Activity() {
             layoutParams = lp
         }
         btnBar.addView(overlayButton!!)
-        // 长期后台 / 电池优化设置按钮（测试分支，适配MIUI）
+        // 长期后台任务权限按钮（测试分支）
         btnBar.addView(Button(this).apply {
-            text = if (isMiui()) "MIUI自启" else "长期后台"
+            text = "长期后台"
             textSize = 12f; setBackgroundColor(0xFF9C27B0.toInt())
             setTextColor(0xFFFFFFFF.toInt()); setPadding(16, 8, 16, 8)
             setOnClickListener {
                 try {
-                    // 关键：先启动悬浮窗，让系统检测到后台活动
                     if (!HdrOverlayService.isServiceRunning) {
                         startForegroundService(Intent(this@MainActivity, HdrOverlayService::class.java))
                         HdrOverlayService.setRunning(true)
-                        Toast.makeText(this@MainActivity, "已启动悬浮窗，请等待几秒后再次点击", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, "已启动悬浮窗，请稍后再次点击进入长期后台任务", Toast.LENGTH_SHORT).show()
                         return@setOnClickListener
                     }
-
-                    if (isMiui()) {
-                        // 跳转长期后台任务（MIUI/澎湃OS）
-                        val intent = Intent().apply {
-                            setClassName("com.android.settings",
-                                "com.android.settings.Settings\$LongBackgroundTasksActivity")
-                        }
-                        startActivity(intent)
-                    } else {
-                        startActivity(Intent().apply {
-                            setClassName("com.android.settings",
-                                "com.android.settings.Settings\$LongBackgroundTasksActivity")
-                        })
-                    }
+                    startActivity(Intent().apply {
+                        setClassName("com.android.settings",
+                            "com.android.settings.Settings\$LongBackgroundTasksActivity")
+                    })
                 } catch (e: Exception) {
-                    try {
-                        startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
-                    } catch (e2: Exception) {
-                        Toast.makeText(this@MainActivity, "无法打开: ${e.message}", Toast.LENGTH_LONG).show()
-                    }
+                    Toast.makeText(this@MainActivity, "无法打开: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
             val lp = LinearLayout.LayoutParams(
