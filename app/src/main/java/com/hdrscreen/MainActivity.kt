@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import android.view.SurfaceView
@@ -74,20 +75,40 @@ class MainActivity : Activity() {
             layoutParams = lp
         }
         btnBar.addView(overlayButton!!)
-        // 长期后台任务设置按钮（测试分支）
+        // 长期后台 / 电池优化设置按钮（测试分支，适配MIUI）
         btnBar.addView(Button(this).apply {
-            text = "长期后台"
+            text = if (isMiui()) "MIUI自启" else "长期后台"
             textSize = 12f; setBackgroundColor(0xFF9C27B0.toInt())
             setTextColor(0xFFFFFFFF.toInt()); setPadding(16, 8, 16, 8)
             setOnClickListener {
                 try {
-                    val intent = Intent().apply {
-                        setClassName("com.android.settings",
-                            "com.android.settings.Settings\$LongBackgroundTasksActivity")
+                    // 关键：先启动悬浮窗，让系统检测到后台活动
+                    if (!HdrOverlayService.isServiceRunning) {
+                        startForegroundService(Intent(this@MainActivity, HdrOverlayService::class.java))
+                        HdrOverlayService.setRunning(true)
+                        Toast.makeText(this@MainActivity, "已启动悬浮窗，请等待几秒后再次点击", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
                     }
-                    startActivity(intent)
+
+                    if (isMiui()) {
+                        // 跳转长期后台任务（MIUI/澎湃OS）
+                        val intent = Intent().apply {
+                            setClassName("com.android.settings",
+                                "com.android.settings.Settings\$LongBackgroundTasksActivity")
+                        }
+                        startActivity(intent)
+                    } else {
+                        startActivity(Intent().apply {
+                            setClassName("com.android.settings",
+                                "com.android.settings.Settings\$LongBackgroundTasksActivity")
+                        })
+                    }
                 } catch (e: Exception) {
-                    Toast.makeText(this@MainActivity, "无法打开: ${e.message}", Toast.LENGTH_LONG).show()
+                    try {
+                        startActivity(Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS))
+                    } catch (e2: Exception) {
+                        Toast.makeText(this@MainActivity, "无法打开: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
             val lp = LinearLayout.LayoutParams(
@@ -169,6 +190,10 @@ class MainActivity : Activity() {
         } catch (e: Exception) {
             Toast.makeText(this, "操作失败: ${e.message}", Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun isMiui(): Boolean {
+        return Build.MANUFACTURER.equals("Xiaomi", ignoreCase = true)
     }
 
     private fun setupImmersiveMode() {
