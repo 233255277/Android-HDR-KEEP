@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="start_overlay"
+        android:enabled="true"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:shortcutShortLabel="@string/shortcut_start_short"
+        android:shortcutLongLabel="@string/shortcut_start_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.hdrscreen"
+            android:targetClass="com.hdrscreen.MainActivity">
+            <extra android:name="action" android:value="start_overlay" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="stop_overlay"
+        android:enabled="true"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:shortcutShortLabel="@string/shortcut_stop_short"
+        android:shortcutLongLabel="@string/shortcut_stop_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.hdrscreen"
+            android:targetClass="com.hdrscreen.MainActivity">
+            <extra android:name="action" android:value="stop_overlay" />
+        </intent>
+    </shortcut>
+</shortcuts>
