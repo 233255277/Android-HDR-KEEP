@@ -136,6 +136,29 @@ class MainActivity : Activity() {
                 stopHdrVideo()
             }
         })
+
+        // 处理 App Shortcuts
+        handleShortcut(intent)
+    }
+
+    private fun handleShortcut(intent: Intent?) {
+        val action = intent?.getStringExtra("action") ?: return
+        when (action) {
+            "start_overlay" -> {
+                if (!HdrOverlayService.isServiceRunning) {
+                    startForegroundService(Intent(this, HdrOverlayService::class.java))
+                    HdrOverlayService.setRunning(true)
+                }
+                finish()
+            }
+            "stop_overlay" -> {
+                if (HdrOverlayService.isServiceRunning) {
+                    stopService(Intent(this, HdrOverlayService::class.java))
+                    HdrOverlayService.setRunning(false)
+                }
+                finish()
+            }
+        }
     }
 
     private fun startHdrVideo(surface: android.view.Surface) {
