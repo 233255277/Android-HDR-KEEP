@@ -30,6 +30,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HdrScreenActivator">
 
+        <meta-data
+            android:name="android.app.shortcuts"
+            android:resource="@xml/shortcuts" />
+
         <!-- 主界面（步骤一：HDR图片查看器入口） -->
         <activity
             android:name=".MainActivity"
@@ -48,6 +52,18 @@
             android:name=".HdrOverlayService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
+
+        <!-- 快捷设置图块 -->
+        <service
+            android:name=".HdrTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:label="HDR悬浮窗"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
 
     </application>
 
