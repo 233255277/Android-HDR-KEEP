@@ -6,6 +6,18 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.RUN_USER_INITIATED_JOBS" />
 
+    <!-- 主动声明禁用以下权限 -->
+    <uses-permission android:name="android.permission.BODY_SENSORS" android:maxSdkVersion="0" />
+    <uses-permission android:name="android.permission.BODY_SENSORS_BACKGROUND" android:maxSdkVersion="0" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" android:maxSdkVersion="0" />
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" android:maxSdkVersion="0" />
+    <uses-permission android:name="android.permission.READ_CLIPBOARD" android:maxSdkVersion="0" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" android:maxSdkVersion="0" />
+    <uses-permission android:name="android.permission.INSTALL_SHORTCUT" android:maxSdkVersion="0" />
+    <uses-permission android:name="android.permission.UNINSTALL_SHORTCUT" android:maxSdkVersion="0" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" android:maxSdkVersion="0" />
+    <uses-permission android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS" android:maxSdkVersion="0" />
+
     <!-- test分支额外权限：长期后台任务，不合并到main -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -22,7 +34,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:theme="@style/Theme.HdrScreenActivator">
