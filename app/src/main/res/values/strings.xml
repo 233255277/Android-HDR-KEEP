@@ -13,4 +13,8 @@
     <string name="hdr_not_supported">设备不支持HDR</string>
     <string name="hdr_active">HDR已激活</string>
     <string name="hdr_inactive">HDR未激活</string>
+    <string name="shortcut_start_short">开启HDR</string>
+    <string name="shortcut_start_long">开启HDR悬浮窗</string>
+    <string name="shortcut_stop_short">关闭HDR</string>
+    <string name="shortcut_stop_long">关闭HDR悬浮窗</string>
 </resources>
