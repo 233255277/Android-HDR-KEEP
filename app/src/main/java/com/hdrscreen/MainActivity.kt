@@ -1,6 +1,7 @@
 package com.hdrscreen
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.media.MediaPlayer
@@ -95,6 +96,29 @@ class MainActivity : Activity() {
             layoutParams = lp
         })
         root.addView(btnBar)
+
+        // 隐藏多任务切换按钮
+        btnBar.addView(Button(this).apply {
+            var hidden = false
+            text = "隐藏多任务: 关"
+            textSize = 14f; setBackgroundColor(0xFFFF9800.toInt())
+            setTextColor(0xFFFFFFFF.toInt()); setPadding(24, 12, 24, 12)
+            setOnClickListener {
+                hidden = !hidden
+                text = if (hidden) "隐藏多任务: 开" else "隐藏多任务: 关"
+                try {
+                    val am = getSystemService(ActivityManager::class.java)
+                    am.appTasks.forEach { it.setExcludeFromRecents(hidden) }
+                    Toast.makeText(this@MainActivity,
+                        if (hidden) "已隐藏" else "已显示", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    Toast.makeText(this@MainActivity, "失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+            val lp = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, 80); lp.setMargins(0, 0, 12, 0)
+            layoutParams = lp
+        })
         setContentView(root)
         setupImmersiveMode()
 
