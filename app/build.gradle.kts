@@ -9,10 +9,10 @@ android {
 
     defaultConfig {
         applicationId = "com.hdrscreen"
-        minSdk = 34
+        minSdk = 31
         targetSdk = 34
-        versionCode = 9
-        versionName = "1.3.6"
+        versionCode = 10
+        versionName = "1.3.7"
     }
 
     buildTypes {
