@@ -142,22 +142,8 @@ class HdrOverlayService : Service() {
 
         override fun surfaceCreated(holder: android.view.SurfaceHolder) {
             Log.d(TAG, "Surface created")
-            // 旋转后 Surface 重建，优先复用现有 MediaPlayer（切换 Surface）
-            if (mediaPlayer != null) {
-                try {
-                    mediaPlayer?.setSurface(holder.surface)
-                    if (mediaPlayer?.isPlaying != true) {
-                        mediaPlayer?.start()
-                    }
-                    Log.d(TAG, "Surface rebound to existing MediaPlayer")
-                } catch (e: Exception) {
-                    Log.w(TAG, "Rebind failed, recreating: ${e.message}")
-                    releaseMediaPlayer()
-                    startOrResumePlayback(holder.surface)
-                }
-            } else {
-                startOrResumePlayback(holder.surface)
-            }
+            // 旋转后 Surface 重建，需要重新启动播放
+            startOrResumePlayback(holder.surface)
         }
 
         override fun surfaceChanged(holder: android.view.SurfaceHolder, format: Int, w: Int, h: Int) {
@@ -165,9 +151,9 @@ class HdrOverlayService : Service() {
         }
 
         override fun surfaceDestroyed(holder: android.view.SurfaceHolder) {
-            Log.d(TAG, "Surface destroyed — pausing playback (keep MediaPlayer alive)")
-            // 不释放！暂停即可，等待新 Surface 绑定时恢复
-            try { mediaPlayer?.pause() } catch (e: Exception) { Log.w(TAG, "pause failed: ${e.message}") }
+            Log.d(TAG, "Surface destroyed — stopping playback")
+            // 旧 Surface 即将失效，必须释放 MediaPlayer
+            releaseMediaPlayer()
         }
     }
 
