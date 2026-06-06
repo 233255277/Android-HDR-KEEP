@@ -7,6 +7,7 @@ import android.app.Service
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.graphics.PixelFormat
+import android.media.ImageReader
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -46,6 +47,7 @@ class HdrOverlayService : Service() {
     private var surfaceView: SurfaceView? = null
     private var mediaPlayer: MediaPlayer? = null
     private var isRunning = false
+    private var dummyReader: ImageReader? = null  // 旋转时临时占位Surface，防止MediaPlayer报错
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -142,8 +144,26 @@ class HdrOverlayService : Service() {
 
         override fun surfaceCreated(holder: android.view.SurfaceHolder) {
             Log.d(TAG, "Surface created")
-            // 旋转后 Surface 重建，需要重新启动播放
-            startOrResumePlayback(holder.surface)
+            // 切回真实Surface，释放占位ImageReader
+            if (mediaPlayer != null) {
+                try {
+                    mediaPlayer?.setSurface(holder.surface)
+                    if (mediaPlayer?.isPlaying != true) {
+                        mediaPlayer?.start()
+                    }
+                    dummyReader?.close()
+                    dummyReader = null
+                    Log.d(TAG, "Surface rebound to real Surface")
+                } catch (e: Exception) {
+                    Log.w(TAG, "Rebind failed, recreating: ${e.message}")
+                    releaseMediaPlayer()
+                    dummyReader?.close()
+                    dummyReader = null
+                    startOrResumePlayback(holder.surface)
+                }
+            } else {
+                startOrResumePlayback(holder.surface)
+            }
         }
 
         override fun surfaceChanged(holder: android.view.SurfaceHolder, format: Int, w: Int, h: Int) {
@@ -151,9 +171,16 @@ class HdrOverlayService : Service() {
         }
 
         override fun surfaceDestroyed(holder: android.view.SurfaceHolder) {
-            Log.d(TAG, "Surface destroyed — stopping playback")
-            // 旧 Surface 即将失效，必须释放 MediaPlayer
-            releaseMediaPlayer()
+            Log.d(TAG, "Surface destroyed — switching to dummy ImageReader")
+            // 立即切换到1×1占位Surface，防止MediaPlayer因Surface失效而报错
+            try {
+                dummyReader = ImageReader.newInstance(1, 1, PixelFormat.RGBA_8888, 2)
+                mediaPlayer?.setSurface(dummyReader?.surface)
+                Log.d(TAG, "Switched to ImageReader placeholder")
+            } catch (e: Exception) {
+                Log.w(TAG, "ImageReader fallback failed: ${e.message}")
+                releaseMediaPlayer()
+            }
         }
     }
 
@@ -206,6 +233,9 @@ class HdrOverlayService : Service() {
         try { mediaPlayer?.stop() } catch (e: Exception) {}
         try { mediaPlayer?.release() } catch (e: Exception) {}
         mediaPlayer = null
+        // 同时清理占位ImageReader
+        try { dummyReader?.close() } catch (e: Exception) {}
+        dummyReader = null
     }
 
     private fun removeOverlay() {
